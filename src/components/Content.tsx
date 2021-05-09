@@ -1,7 +1,11 @@
-import { useState, useEffect } from "react";
-import { api } from "../services/api";
 import React from "react";
-import { MovieCard } from "./MovieCard";
+import { useEffect, useState } from 'react';
+
+import { MovieCard } from '../components/MovieCard';
+
+import { api } from '../services/api';
+
+import '../styles/content.scss';
 
 interface GenreResponseProps {
   id: number;
@@ -20,25 +24,23 @@ interface MovieProps {
   Runtime: string;
 }
 
-export function Content() {
+
+export function Content({state}) {
   // Complete aqui
-  const [selectedGenreId, setSelectedGenreId] = useState(1);
   const [movies, setMovies] = useState<MovieProps[]>([]);
   const [selectedGenre, setSelectedGenre] = useState<GenreResponseProps>({} as GenreResponseProps);
 
   useEffect(() => {
-    console.log(selectedGenreId);
-    api.get<MovieProps[]>(`movies/?Genre_id=${selectedGenreId}`).then(response => {
+    api.get<MovieProps[]>(`movies/?Genre_id=${state.selectedGenreId}`).then(response => {
       setMovies(response.data);
-      console.log(response.data);
     });
 
-    api.get<GenreResponseProps>(`genres/${selectedGenreId}`).then(response => {
+    api.get<GenreResponseProps>(`genres/${state.selectedGenreId}`).then(response => {
       setSelectedGenre(response.data);
     })
-  }, [selectedGenreId]);
-
+  }, [state.selectedGenreId]);
   
+
   return(
     <div className="container">
       <header>
@@ -48,7 +50,7 @@ export function Content() {
       <main>
         <div className="movies-list">
           {movies.map(movie => (
-            <MovieCard key={movie.imdbID} title={movie.Title} poster={movie.Poster} runtime={movie.Runtime} rating={movie.Ratings[0].Value} />
+            <MovieCard key ={movie.imdbID} title={movie.Title} poster={movie.Poster} runtime={movie.Runtime} rating={movie.Ratings[0].Value} />
           ))}
         </div>
       </main>
